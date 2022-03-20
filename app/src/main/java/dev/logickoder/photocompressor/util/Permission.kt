@@ -1,11 +1,13 @@
 package dev.logickoder.photocompressor.util
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import com.google.accompanist.permissions.*
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 
 @ExperimentalPermissionsApi
 @Composable
@@ -19,11 +21,12 @@ fun Permission(
     when (permissionState.status) {
         PermissionStatus.Granted -> content()
         is PermissionStatus.Denied -> {
-            Rationale(
-                text = rationale,
-                onRequestPermission = { permissionState.launchPermissionRequest() }
-            )
-            permissionNotAvailableContent()
+            if (permissionState.status.shouldShowRationale)
+                Rationale(
+                    text = rationale,
+                    onRequestPermission = { permissionState.launchPermissionRequest() }
+                )
+            else permissionNotAvailableContent()
         }
     }
 }
