@@ -1,4 +1,4 @@
-package dev.logickoder.photocompressor.gallery
+package dev.logickoder.photocompressor.ui.shared.components.gallery
 
 import android.Manifest
 import android.content.Intent
@@ -7,11 +7,7 @@ import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -19,9 +15,9 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import dev.logickoder.photocompressor.EMPTY_IMAGE_URI
 import dev.logickoder.photocompressor.util.Permission
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
 @ExperimentalPermissionsApi
 @Composable

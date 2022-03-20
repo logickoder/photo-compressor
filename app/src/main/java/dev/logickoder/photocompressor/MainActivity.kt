@@ -12,21 +12,17 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-import dev.logickoder.photocompressor.camera.CameraCapture
-import dev.logickoder.photocompressor.gallery.GallerySelect
-import dev.logickoder.photocompressor.ui.theme.ComposePhotoIntegrationTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import dev.logickoder.photocompressor.ui.shared.components.camera.CameraCapture
+import dev.logickoder.photocompressor.ui.shared.components.gallery.GallerySelect
+import dev.logickoder.photocompressor.ui.theme.ComposePhotoIntegrationTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoilApi
