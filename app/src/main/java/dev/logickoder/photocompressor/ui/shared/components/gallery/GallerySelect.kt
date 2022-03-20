@@ -20,13 +20,13 @@ import dev.logickoder.photocompressor.util.Permission
 @Composable
 fun GallerySelect(
     modifier: Modifier = Modifier,
-    onImageUri: (Uri) -> Unit = { }
+    onImageUri: (List<Uri>) -> Unit = { }
 ) {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri: Uri? ->
-            onImageUri(uri ?: EMPTY_IMAGE_URI)
+        contract = ActivityResultContracts.GetMultipleContents(),
+        onResult = { uri: List<Uri>? ->
+            onImageUri(uri ?: emptyList())
         }
     )
 
@@ -62,7 +62,7 @@ fun GallerySelect(
                         Button(
                             modifier = Modifier.padding(4.dp),
                             onClick = {
-                                onImageUri(EMPTY_IMAGE_URI)
+                                onImageUri(emptyList())
                             }
                         ) {
                             Text("Use Camera")
