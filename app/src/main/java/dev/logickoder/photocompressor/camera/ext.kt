@@ -1,4 +1,4 @@
-package com.example.composephoto.camera
+package dev.logickoder.photocompressor.camera
 
 import android.content.Context
 import android.util.Log

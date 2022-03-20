@@ -1,4 +1,4 @@
-package com.example.composephoto.gallery
+package dev.logickoder.photocompressor.gallery
 
 import android.Manifest
 import android.content.Intent
@@ -19,8 +19,8 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.composephoto.EMPTY_IMAGE_URI
-import com.example.composephoto.util.Permission
+import dev.logickoder.photocompressor.EMPTY_IMAGE_URI
+import dev.logickoder.photocompressor.util.Permission
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
 @ExperimentalPermissionsApi

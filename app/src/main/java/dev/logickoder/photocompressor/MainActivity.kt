@@ -1,4 +1,4 @@
-package com.example.composephoto
+package dev.logickoder.photocompressor
 
 import android.net.Uri
 import android.os.Bundle
@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-import com.example.composephoto.camera.CameraCapture
-import com.example.composephoto.gallery.GallerySelect
-import com.example.composephoto.ui.theme.ComposePhotoIntegrationTheme
+import dev.logickoder.photocompressor.camera.CameraCapture
+import dev.logickoder.photocompressor.gallery.GallerySelect
+import dev.logickoder.photocompressor.ui.theme.ComposePhotoIntegrationTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 

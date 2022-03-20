@@ -1,4 +1,4 @@
-package com.example.composephoto.ui.theme
+package dev.logickoder.photocompressor.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

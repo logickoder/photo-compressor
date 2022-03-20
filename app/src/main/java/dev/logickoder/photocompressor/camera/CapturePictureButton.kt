@@ -1,4 +1,4 @@
-package com.example.composephoto.camera
+package dev.logickoder.photocompressor.camera
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource

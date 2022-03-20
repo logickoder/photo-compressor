@@ -1,4 +1,4 @@
-package com.example.composephoto.camera
+package dev.logickoder.photocompressor.camera
 
 import android.view.ViewGroup
 import androidx.camera.core.Preview

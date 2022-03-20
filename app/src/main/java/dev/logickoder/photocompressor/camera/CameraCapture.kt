@@ -1,4 +1,4 @@
-package com.example.composephoto.camera
+package dev.logickoder.photocompressor.camera
 
 import android.Manifest
 import android.content.Intent
@@ -31,7 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import com.example.composephoto.util.Permission
+import dev.logickoder.photocompressor.util.Permission
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import java.io.File
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -1,12 +1,11 @@
-package com.example.composephoto.util
+package dev.logickoder.photocompressor.util
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionRequired
-import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.*
 
 @ExperimentalPermissionsApi
 @Composable
@@ -17,17 +16,16 @@ fun Permission(
     content: @Composable () -> Unit = { }
 ) {
     val permissionState = rememberPermissionState(permission)
-    PermissionRequired(
-        permissionState = permissionState,
-        permissionNotGrantedContent = {
+    when (permissionState.status) {
+        PermissionStatus.Granted -> content()
+        is PermissionStatus.Denied -> {
             Rationale(
                 text = rationale,
                 onRequestPermission = { permissionState.launchPermissionRequest() }
             )
-        },
-        permissionNotAvailableContent = permissionNotAvailableContent,
-        content = content
-    )
+            permissionNotAvailableContent()
+        }
+    }
 }
 
 @Composable
