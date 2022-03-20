@@ -30,6 +30,7 @@ android {
     kotlinOptions {
         jvmTarget = '11'
         useIR = true
+        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
     buildFeatures {
         compose true

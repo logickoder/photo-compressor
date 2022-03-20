@@ -15,11 +15,8 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import dev.logickoder.photocompressor.EMPTY_IMAGE_URI
 import dev.logickoder.photocompressor.util.Permission
 
-@ExperimentalPermissionsApi
 @Composable
 fun GallerySelect(
     modifier: Modifier = Modifier,
@@ -80,3 +77,5 @@ fun GallerySelect(
         LaunchGallery()
     }
 }
+
+val EMPTY_IMAGE_URI: Uri = Uri.parse("file://dev/null")

@@ -9,7 +9,7 @@ import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 
-@ExperimentalPermissionsApi
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun Permission(
     permission: String = android.Manifest.permission.CAMERA,
