@@ -4,12 +4,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -24,6 +27,7 @@ import dev.logickoder.photocompressor.ui.shared.components.ads.interstitialAd
 import dev.logickoder.photocompressor.ui.shared.components.camera.CameraCapture
 import dev.logickoder.photocompressor.ui.shared.components.gallery.GallerySelect
 import dev.logickoder.photocompressor.ui.shared.view_models.PhotoCompressionViewModel
+import dev.logickoder.photocompressor.ui.shared.view_models.PhotoCompressionViewModel.Companion.DEFAULT_COMPRESSION_QUALITY
 import dev.logickoder.photocompressor.ui.shared.view_models.PhotoSelection
 import dev.logickoder.photocompressor.ui.theme.padding
 import dev.logickoder.photocompressor.util.BannerId
@@ -136,21 +140,43 @@ fun HomeScreen(
             }
         }
         Spacer(modifier = Modifier.height(padding))
-        Button(
-            onClick = {
-                compressPhotos(interstitialAd, navigateToCompressedScreen)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !isCompressing.value,
-            shape = Theme.shapes.medium,
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
         ) {
-            Text(
-                text = stringResource(
-                    id = if (isCompressing.value) R.string.compressing else R.string.compress
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth(0.3f)
+                    .fillMaxHeight(),
+                value = compressionQuality.value.toString(),
+                label = { Text(stringResource(id = R.string.quality)) },
+                onValueChange = {
+                    compressionQuality.value = it.toIntOrNull()?.let { input ->
+                        if (input > 100) 100 else if (input < 0) 0 else input
+                    } ?: DEFAULT_COMPRESSION_QUALITY
+                },
+                textStyle = LocalTextStyle.current.copy(fontWeight = FontWeight.Medium),
+                shape = Theme.shapes.medium,
             )
+            Button(
+                onClick = {
+                    compressPhotos(interstitialAd, navigateToCompressedScreen)
+                },
+                modifier = Modifier
+                    .fillMaxWidth(0.65f)
+                    .align(Alignment.CenterEnd),
+                enabled = !isCompressing.value,
+                shape = Theme.shapes.medium,
+            ) {
+                Text(
+                    text = stringResource(
+                        id = if (isCompressing.value) R.string.compressing else R.string.compress
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
         Spacer(modifier = Modifier.height(padding))
         NativeAd(

@@ -31,6 +31,7 @@ class PhotoCompressionViewModel(application: Application) : AndroidViewModel(app
     val isCompressing = mutableStateOf(false)
     val isDownloading = mutableStateOf(false)
     val photoSelection = mutableStateOf(PhotoSelection.Any)
+    val compressionQuality = mutableStateOf(DEFAULT_COMPRESSION_QUALITY)
     private val app = getApplication<Application>()
 
     fun selectPhotos(vararg uri: Uri) {
@@ -63,7 +64,7 @@ class PhotoCompressionViewModel(application: Application) : AndroidViewModel(app
                         Bitmap.CompressFormat.WEBP_LOSSLESS
                     else
                         Bitmap.CompressFormat.WEBP,
-                    70,
+                    compressionQuality.value,
                     stream
                 )
             }
@@ -120,5 +121,6 @@ class PhotoCompressionViewModel(application: Application) : AndroidViewModel(app
 
     companion object {
         const val TAG = "PhotoCompressorViewModel"
+        const val DEFAULT_COMPRESSION_QUALITY = 80
     }
 }
