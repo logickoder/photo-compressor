@@ -36,6 +36,7 @@ import androidx.compose.material.MaterialTheme as Theme
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: PhotoCompressionViewModel = viewModel(),
+    navigateToCompressedScreen: () -> Unit,
 ) = with(viewModel) {
 
     val context = LocalContext.current
@@ -137,8 +138,7 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(padding))
         Button(
             onClick = {
-                compressPhotos()
-                if (interstitialAd.isAdLoaded) interstitialAd.show()
+                compressPhotos(interstitialAd, navigateToCompressedScreen)
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = !isCompressing.value,

@@ -1,11 +1,7 @@
 package dev.logickoder.photocompressor
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -14,12 +10,10 @@ import dev.logickoder.photocompressor.ui.screens.CompressedScreen
 import dev.logickoder.photocompressor.ui.screens.HomeScreen
 
 sealed class Navigation(
-    val title: String,
-    val icon: ImageVector,
     val route: String,
 ) {
-    object Home : Navigation("Home", Icons.Default.Home, "/home")
-    object Compressed : Navigation("Compressed", Icons.Default.AccountBox, "/compressed")
+    object Home : Navigation("/home")
+    object Compressed : Navigation("/compressed")
 }
 
 @Composable
@@ -32,14 +26,16 @@ fun NavGraph(
         startDestination = Navigation.Home.route,
         modifier = modifier
     ) {
-        homeGraph()
+        homeGraph(navController)
         compressedGraph()
     }
 }
 
-fun NavGraphBuilder.homeGraph() {
+fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     composable(Navigation.Home.route) {
-        HomeScreen()
+        HomeScreen {
+            navController.navigate(Navigation.Compressed.route)
+        }
     }
 }
 

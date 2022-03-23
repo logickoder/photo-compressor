@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.facebook.ads.InterstitialAd
 import dev.logickoder.photocompressor.ui.shared.components.Photo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,7 +33,10 @@ class PhotoCompressionViewModel(application: Application) : AndroidViewModel(app
         selectedPhotos += uri.map { Photo(it, it.size(app.contentResolver).humanReadableByteCount) }
     }
 
-    fun compressPhotos() = viewModelScope.launch(Dispatchers.IO) {
+    fun compressPhotos(
+        interstitialAd: InterstitialAd,
+        navigateToCompressedScreen: () -> Unit,
+    ) = viewModelScope.launch(Dispatchers.IO) {
         if (selectedPhotos.isNotEmpty()) {
             isCompressing.value = true
             val context = getApplication<Application>().baseContext
@@ -61,6 +65,8 @@ class PhotoCompressionViewModel(application: Application) : AndroidViewModel(app
             }
             isCompressing.value = false
             selectedPhotos.removeAll { true }
+            if (interstitialAd.isAdLoaded) interstitialAd.show()
+            navigateToCompressedScreen()
         }
     }
 

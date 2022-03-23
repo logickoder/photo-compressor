@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
-import dev.logickoder.photocompressor.ui.shared.components.BottomNavigation
 import dev.logickoder.photocompressor.ui.theme.PhotoCompressorTheme
 
 class MainActivity : ComponentActivity() {
@@ -34,12 +33,6 @@ fun MainContent() {
                     title = { Text(text = stringResource(id = R.string.app_name)) }
                 )
             },
-            bottomBar = {
-                BottomNavigation(
-                    navController = navController,
-                    items = listOf(Navigation.Home, Navigation.Compressed)
-                )
-            }
         ) {
             NavGraph(navController = navController, modifier = Modifier.padding(it))
         }
