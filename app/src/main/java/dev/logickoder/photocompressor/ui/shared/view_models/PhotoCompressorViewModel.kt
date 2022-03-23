@@ -16,6 +16,7 @@ import com.facebook.ads.InterstitialAd
 import dev.logickoder.photocompressor.ui.shared.components.Photo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
@@ -68,8 +69,10 @@ class PhotoCompressionViewModel(application: Application) : AndroidViewModel(app
             }
             isCompressing.value = false
             selectedPhotos.removeAll { true }
-            navigateToCompressedScreen()
-            if (interstitialAd.isAdLoaded) interstitialAd.show()
+            withContext(Dispatchers.Main) {
+                navigateToCompressedScreen()
+                if (interstitialAd.isAdLoaded) interstitialAd.show()
+            }
         }
     }
 
