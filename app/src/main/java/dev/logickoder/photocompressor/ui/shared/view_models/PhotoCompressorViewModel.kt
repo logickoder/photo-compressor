@@ -84,38 +84,42 @@ class PhotoCompressionViewModel(application: Application) : AndroidViewModel(app
         }
     }
 
-    fun downloadCompressedPhotos() = viewModelScope.launch(Dispatchers.IO) {
+    fun downloadCompressedPhotos(
+        onComplete: (String) -> Unit,
+    ) = viewModelScope.launch(Dispatchers.IO) {
         if (compressedPhotos.isNotEmpty()) {
             isDownloading.value = true
             val context = getApplication<Application>().baseContext
             val downloadFolder = File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
                 "compressed"
-            )
-            while (compressedPhotos.isNotEmpty()) {
+            ).also { it.mkdir() }
+
+            compressedPhotos.forEach { photo ->
+                val source = context.contentResolver.openInputStream(photo.uri)!!
+                val destination = FileOutputStream(
+                    File(
+                        downloadFolder,
+                        photo.uri.fileName(app.contentResolver).toString()
+                    ).also { if (!it.exists()) it.createNewFile() }
+                )
                 try {
-                    val photo = compressedPhotos.first()
-                    val source = context.contentResolver.openInputStream(photo.uri)!!
-                    val destination = FileOutputStream(
-                        File(
-                            downloadFolder,
-                            photo.uri.fileName(app.contentResolver).toString()
-                        ).also { if (!it.exists()) it.createNewFile() }
-                    )
                     val buf = ByteArray(1024)
                     var len: Int
                     while (Unit.let { len = source.read(buf); len } > 0) {
                         destination.write(buf, 0, len)
                     }
-                    source.close()
-                    destination.close()
+                    File(photo.uri.path.toString()).delete()
                 } catch (e: Exception) {
                     Log.e(TAG, "downloadCompressedPhotos: ${e.message}")
                 } finally {
-                    compressedPhotos.removeAt(0)
+                    source.close()
+                    destination.close()
                 }
             }
             isDownloading.value = false
+            onComplete(downloadFolder.toString())
+            fetchCompressedPhotos()
         }
     }
 

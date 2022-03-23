@@ -26,7 +26,11 @@ fun Permission(
                     text = rationale,
                     onRequestPermission = { permissionState.launchPermissionRequest() }
                 )
-            else permissionNotAvailableContent()
+            else AlertDialog(
+                onDismissRequest = { /* Don't */ },
+                text = { permissionNotAvailableContent() },
+                confirmButton = {}
+            )
         }
     }
 }
