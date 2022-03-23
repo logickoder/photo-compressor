@@ -33,30 +33,35 @@ class PhotoCompressionViewModel(application: Application) : AndroidViewModel(app
     }
 
     fun compressPhotos() = viewModelScope.launch(Dispatchers.IO) {
-        isCompressing.value = true
-
-        val context = getApplication<Application>().baseContext
-        selectedPhotos.distinct().forEach { photo ->
-            // the location for the compressed image
-            val file =
-                File(context.externalCacheDir, photo.uri.fileName(app.contentResolver).toString())
-            if (!file.exists()) file.createNewFile()
-            // get the bitmap from the uri
-            // initialize a file output stream to store the compressed image
-            val stream = FileOutputStream(file)
-            val bitmap =
-                BitmapFactory.decodeStream(context.contentResolver.openInputStream(photo.uri))
-            // compress the bitmap
-            bitmap.compress(
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                    Bitmap.CompressFormat.WEBP_LOSSLESS
-                else
-                    Bitmap.CompressFormat.WEBP,
-                70,
-                stream
-            )
+        if (selectedPhotos.isNotEmpty()) {
+            isCompressing.value = true
+            val context = getApplication<Application>().baseContext
+            selectedPhotos.distinct().forEach { photo ->
+                // the location for the compressed image
+                val file =
+                    File(
+                        context.externalCacheDir,
+                        photo.uri.fileName(app.contentResolver).toString()
+                    )
+                if (!file.exists()) file.createNewFile()
+                // get the bitmap from the uri
+                // initialize a file output stream to store the compressed image
+                val stream = FileOutputStream(file)
+                val bitmap =
+                    BitmapFactory.decodeStream(context.contentResolver.openInputStream(photo.uri))
+                // compress the bitmap
+                bitmap.compress(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                        Bitmap.CompressFormat.WEBP_LOSSLESS
+                    else
+                        Bitmap.CompressFormat.WEBP,
+                    70,
+                    stream
+                )
+            }
+            isCompressing.value = false
+            selectedPhotos.removeAll { true }
         }
-        isCompressing.value = false
     }
 
     fun fetchCompressedPhotos() = viewModelScope.launch {
