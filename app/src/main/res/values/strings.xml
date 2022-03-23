@@ -5,4 +5,6 @@
     <string name="select_from_gallery">Select %1$s photo from Gallery</string>
     <string name="compress">Compress</string>
     <string name="compressing">Compressing…</string>
+    <string name="download">Download</string>
+    <string name="downloading">Downloading…</string>
 </resources>

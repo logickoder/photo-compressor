@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.net.toUri
@@ -26,6 +28,7 @@ class PhotoCompressionViewModel(application: Application) : AndroidViewModel(app
     val selectedPhotos = mutableStateListOf<Photo>()
     val compressedPhotos = mutableStateListOf<Photo>()
     val isCompressing = mutableStateOf(false)
+    val isDownloading = mutableStateOf(false)
     val photoSelection = mutableStateOf(PhotoSelection.Any)
     private val app = getApplication<Application>()
 
@@ -65,8 +68,8 @@ class PhotoCompressionViewModel(application: Application) : AndroidViewModel(app
             }
             isCompressing.value = false
             selectedPhotos.removeAll { true }
-            if (interstitialAd.isAdLoaded) interstitialAd.show()
             navigateToCompressedScreen()
+            if (interstitialAd.isAdLoaded) interstitialAd.show()
         }
     }
 
@@ -75,5 +78,44 @@ class PhotoCompressionViewModel(application: Application) : AndroidViewModel(app
         getApplication<Application>().baseContext.externalCacheDir?.listFiles()?.forEach {
             compressedPhotos.add(Photo(it.toUri(), it.length().humanReadableByteCount))
         }
+    }
+
+    fun downloadCompressedPhotos() = viewModelScope.launch(Dispatchers.IO) {
+        if (compressedPhotos.isNotEmpty()) {
+            isDownloading.value = true
+            val context = getApplication<Application>().baseContext
+            val downloadFolder = File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                "compressed"
+            )
+            while (compressedPhotos.isNotEmpty()) {
+                try {
+                    val photo = compressedPhotos.first()
+                    val source = context.contentResolver.openInputStream(photo.uri)!!
+                    val destination = FileOutputStream(
+                        File(
+                            downloadFolder,
+                            photo.uri.fileName(app.contentResolver).toString()
+                        ).also { if (!it.exists()) it.createNewFile() }
+                    )
+                    val buf = ByteArray(1024)
+                    var len: Int
+                    while (Unit.let { len = source.read(buf); len } > 0) {
+                        destination.write(buf, 0, len)
+                    }
+                    source.close()
+                    destination.close()
+                } catch (e: Exception) {
+                    Log.e(TAG, "downloadCompressedPhotos: ${e.message}")
+                } finally {
+                    compressedPhotos.removeAt(0)
+                }
+            }
+            isDownloading.value = false
+        }
+    }
+
+    companion object {
+        const val TAG = "PhotoCompressorViewModel"
     }
 }
