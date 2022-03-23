@@ -20,6 +20,7 @@ import dev.logickoder.photocompressor.util.Permission
 @Composable
 fun GallerySelect(
     modifier: Modifier = Modifier,
+    type: String = "*",
     onImageUri: (List<Uri>) -> Unit = { }
 ) {
     val context = LocalContext.current
@@ -33,7 +34,7 @@ fun GallerySelect(
     @Composable
     fun LaunchGallery() {
         SideEffect {
-            launcher.launch("image/*")
+            launcher.launch("image/$type")
         }
     }
 

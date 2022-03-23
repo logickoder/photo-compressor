@@ -2,7 +2,7 @@
     <string name="app_name">Photo Compressor</string>
     <string name="no_image">No photo has been added!</string>
     <string name="take_photo">Take Photo</string>
-    <string name="select_from_gallery">Select from Gallery</string>
+    <string name="select_from_gallery">Select %1$s photo from Gallery</string>
     <string name="compress">Compress</string>
     <string name="compressing">Compressing…</string>
 </resources>

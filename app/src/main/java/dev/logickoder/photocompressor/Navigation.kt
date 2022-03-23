@@ -6,23 +6,19 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import dev.logickoder.photocompressor.ui.screens.home.HomeScreen
+import dev.logickoder.photocompressor.ui.screens.CompressedScreen
+import dev.logickoder.photocompressor.ui.screens.HomeScreen
 
 sealed class Navigation(
     val title: String,
     val icon: ImageVector,
     val route: String,
 ) {
-    object Home : Navigation("Home", Icons.Default.Home, "/home") {
-        object Index : Navigation("Home", icon, "$route/")
-    }
-
+    object Home : Navigation("Home", Icons.Default.Home, "/home")
     object Compressed : Navigation("Compressed", Icons.Default.AccountBox, "/compressed")
 }
 
@@ -36,24 +32,19 @@ fun NavGraph(
         startDestination = Navigation.Home.route,
         modifier = modifier
     ) {
-        homeGraph(navController)
-        compressedGraph(navController)
+        homeGraph()
+        compressedGraph()
     }
 }
 
-fun NavGraphBuilder.homeGraph(navController: NavController) {
-    navigation(
-        startDestination = Navigation.Home.Index.route,
-        route = Navigation.Home.route,
-    ) {
-        composable(Navigation.Home.Index.route) {
-            HomeScreen()
-        }
+fun NavGraphBuilder.homeGraph() {
+    composable(Navigation.Home.route) {
+        HomeScreen()
     }
 }
 
-fun NavGraphBuilder.compressedGraph(navController: NavController) {
+fun NavGraphBuilder.compressedGraph() {
     composable(Navigation.Compressed.route) {
-
+        CompressedScreen()
     }
 }
