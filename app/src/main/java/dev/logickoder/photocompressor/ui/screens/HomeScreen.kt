@@ -2,17 +2,16 @@ package dev.logickoder.photocompressor.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -72,116 +71,146 @@ fun HomeScreen(
                 )
             }
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = padding)
-            .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = stringResource(id = R.string.app_name)) }
+            )
+        }
     ) {
-        BannerAd(
-            modifier = Modifier.fillMaxWidth(),
-            placementId = BannerId,
-        )
-        if (selectedPhotos.isEmpty())
-            Text(
-                text = stringResource(id = R.string.no_image),
-                style = Theme.typography.h5,
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+                .padding(horizontal = padding)
+                .verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            BannerAd(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = padding),
+                placementId = BannerId,
             )
-        else {
-            Spacer(modifier = Modifier.height(padding))
-            PhotoGrid(
+
+            if (selectedPhotos.isEmpty())
+                Text(
+                    text = stringResource(id = R.string.no_selected_image),
+                    style = Theme.typography.h6,
+                )
+            else
+                PhotoGrid(
+                    modifier = Modifier
+                        .padding(bottom = padding)
+                        .fillMaxWidth(),
+                    photos = selectedPhotos,
+                )
+
+            val buttonTextStyle = Theme.typography.button.run {
+                copy(fontSize = fontSize * 1.2)
+            }
+            Button(
+                onClick = { showGallery = false },
+                modifier = Modifier
+                    .padding(vertical = padding)
+                    .fillMaxWidth()
+                    .height(TextFieldDefaults.MinHeight),
+                shape = Theme.shapes.medium,
+            ) {
+                Text(
+                    text = stringResource(id = R.string.take_photo),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = buttonTextStyle,
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .padding(vertical = padding)
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+            ) {
+                DropdownField(
+                    modifier = Modifier
+                        .fillMaxWidth(0.3f)
+                        .fillMaxHeight(),
+                    suggested = photoSelection.value,
+                    suggestions = PhotoSelection.values().toList(),
+                    onSuggestionSelected = { photoSelection.value = it }
+                )
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth(0.65f)
+                        .align(Alignment.CenterEnd)
+                        .height(TextFieldDefaults.MinHeight),
+                    onClick = { showGallery = true },
+                    shape = Theme.shapes.medium,
+                ) {
+                    Text(
+                        text = stringResource(
+                            id = R.string.select_from_gallery,
+                            photoSelection.value.name
+                        ),
+                        style = buttonTextStyle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .padding(vertical = padding)
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+            ) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth(0.3f)
+                        .fillMaxHeight(),
+                    value = compressionQuality.value.toString(),
+                    label = { Text(stringResource(id = R.string.quality)) },
+                    onValueChange = {
+                        compressionQuality.value =
+                            if (it.isBlank()) 0 else it.toIntOrNull()?.let { input ->
+                                if (input > 100) 100 else if (input < 0) 0 else input
+                            } ?: DEFAULT_COMPRESSION_QUALITY
+                    },
+                    textStyle = LocalTextStyle.current.copy(fontWeight = FontWeight.Medium),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.NumberPassword
+                    ),
+                    shape = Theme.shapes.medium,
+                )
+                Button(
+                    onClick = {
+                        interstitialAd(InterstitialId, context)
+                        compressPhotos(interstitialAd, navigateToCompressedScreen)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth(0.65f)
+                        .align(Alignment.CenterEnd)
+                        .height(TextFieldDefaults.MinHeight),
+                    enabled = !isCompressing.value,
+                    shape = Theme.shapes.medium,
+                ) {
+                    Text(
+                        text = stringResource(
+                            id = if (isCompressing.value) R.string.compressing else R.string.compress
+                        ),
+                        style = buttonTextStyle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            NativeAd(
                 modifier = Modifier.fillMaxWidth(),
-                photos = selectedPhotos,
+                placementId = NativeId,
             )
         }
-        Spacer(modifier = Modifier.height(padding))
-        Button(
-            onClick = { showGallery = false },
-            modifier = Modifier.fillMaxWidth(),
-            shape = Theme.shapes.medium,
-        ) {
-            Text(
-                text = stringResource(id = R.string.take_photo),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-        Spacer(modifier = Modifier.height(padding))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(IntrinsicSize.Min)
-        ) {
-            DropdownField(
-                modifier = Modifier
-                    .fillMaxWidth(0.3f)
-                    .fillMaxHeight(),
-                suggested = photoSelection.value,
-                suggestions = PhotoSelection.values().toList(),
-                onSuggestionSelected = { photoSelection.value = it }
-            )
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth(0.65f)
-                    .align(Alignment.CenterEnd),
-                onClick = { showGallery = true },
-                shape = Theme.shapes.medium,
-            ) {
-                Text(
-                    text = stringResource(
-                        id = R.string.select_from_gallery,
-                        photoSelection.value.name
-                    ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(padding))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(IntrinsicSize.Min)
-        ) {
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth(0.3f)
-                    .fillMaxHeight(),
-                value = compressionQuality.value.toString(),
-                label = { Text(stringResource(id = R.string.quality)) },
-                onValueChange = {
-                    compressionQuality.value = it.toIntOrNull()?.let { input ->
-                        if (input > 100) 100 else if (input < 0) 0 else input
-                    } ?: DEFAULT_COMPRESSION_QUALITY
-                },
-                textStyle = LocalTextStyle.current.copy(fontWeight = FontWeight.Medium),
-                shape = Theme.shapes.medium,
-            )
-            Button(
-                onClick = {
-                    compressPhotos(interstitialAd, navigateToCompressedScreen)
-                },
-                modifier = Modifier
-                    .fillMaxWidth(0.65f)
-                    .align(Alignment.CenterEnd),
-                enabled = !isCompressing.value,
-                shape = Theme.shapes.medium,
-            ) {
-                Text(
-                    text = stringResource(
-                        id = if (isCompressing.value) R.string.compressing else R.string.compress
-                    ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(padding))
-        NativeAd(
-            modifier = Modifier.fillMaxWidth(),
-            placementId = NativeId,
-        )
     }
 }

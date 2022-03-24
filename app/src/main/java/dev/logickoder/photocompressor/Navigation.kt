@@ -27,7 +27,7 @@ fun NavGraph(
         modifier = modifier
     ) {
         homeGraph(navController)
-        compressedGraph()
+        compressedGraph(navController)
     }
 }
 
@@ -39,8 +39,10 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     }
 }
 
-fun NavGraphBuilder.compressedGraph() {
+fun NavGraphBuilder.compressedGraph(navController: NavHostController) {
     composable(Navigation.Compressed.route) {
-        CompressedScreen()
+        CompressedScreen {
+            navController.popBackStack()
+        }
     }
 }

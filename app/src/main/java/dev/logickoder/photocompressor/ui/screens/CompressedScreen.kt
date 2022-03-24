@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
@@ -30,6 +32,7 @@ import kotlinx.coroutines.launch
 fun CompressedScreen(
     modifier: Modifier = Modifier,
     viewModel: PhotoCompressionViewModel = viewModel(),
+    navigateBackToHomeScreen: () -> Unit,
 ) = with(viewModel) {
 
     val context = LocalContext.current
@@ -62,24 +65,46 @@ fun CompressedScreen(
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-    Scaffold(modifier = modifier, scaffoldState = scaffoldState) {
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = stringResource(id = R.string.app_name))
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navigateBackToHomeScreen() }) {
+                        Icon(Icons.Default.ArrowBack, null)
+                    }
+                },
+            )
+        },
+        scaffoldState = scaffoldState,
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = padding * 2)
                 .verticalScroll(scrollState)
         ) {
-            Spacer(modifier = Modifier.height(padding))
             BannerAd(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .padding(vertical = padding)
+                    .fillMaxWidth(),
                 placementId = BannerId,
             )
-            Spacer(modifier = Modifier.height(padding))
-            PhotoGrid(
-                modifier = Modifier.fillMaxWidth(),
-                photos = compressedPhotos,
-            )
-            Spacer(modifier = Modifier.height(padding))
+
+            if (compressedPhotos.isEmpty())
+                Text(
+                    text = stringResource(id = R.string.no_compressed_photo),
+                    style = MaterialTheme.typography.h6,
+                )
+            else
+                PhotoGrid(
+                    modifier = Modifier.fillMaxWidth(),
+                    photos = compressedPhotos,
+                )
+
             val savedTo = stringResource(id = R.string.saved_to)
             Button(
                 onClick = {
@@ -89,7 +114,10 @@ fun CompressedScreen(
                         }
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .padding(top = padding * 2, bottom = padding)
+                    .fillMaxWidth()
+                    .height(TextFieldDefaults.MinHeight),
                 enabled = compressedPhotos.isNotEmpty() && !isDownloading.value,
                 shape = MaterialTheme.shapes.medium,
             ) {
@@ -98,7 +126,10 @@ fun CompressedScreen(
                         id = if (isCompressing.value) R.string.downloading else R.string.download,
                     ),
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.button.run {
+                        copy(fontSize = fontSize * 1.2)
+                    }
                 )
             }
         }
